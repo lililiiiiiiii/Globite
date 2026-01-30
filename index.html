@@ -6,7 +6,7 @@
     <title>Globite - 每日一國</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <style>
-        :root { --primary: #2563eb; --bg: #f1f5f9; }
+        :root { --primary: #2563eb; --bg: #f1f5f9; --dark: #1e293b; --danger: #ef4444; }
         body { font-family: -apple-system, system-ui, sans-serif; background-color: var(--bg); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px 0; }
         .card { background: white; width: 90%; max-width: 380px; border-radius: 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; text-align: center; }
         .image-container { width: 100%; height: 180px; background: #eee; cursor: pointer; position: relative; }
@@ -14,22 +14,26 @@
         .image-container::after { content: "🔊"; position: absolute; bottom: 10px; right: 10px; font-size: 20px; opacity: 0.6; }
         .content { padding: 20px; }
         .tag { display: inline-block; background: #f1f5f9; padding: 4px 12px; border-radius: 50px; font-size: 12px; color: #64748b; margin-bottom: 10px; }
-        h1 { margin: 5px 0; font-size: 24px; color: #0f172a; line-height: 1.2; cursor: pointer; transition: color 0.2s; }
-        h1:active { color: var(--primary); }
+        h1 { margin: 5px 0; font-size: 24px; color: #0f172a; line-height: 1.2; cursor: pointer; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; text-align: left; }
         .info-item { background: #f8fafc; padding: 10px; border-radius: 12px; border: 1px solid #edf2f7; }
         .label { color: #94a3b8; font-size: 10px; display: block; }
-        .value { font-weight: 600; color: #334155; font-size: 14px; }
+        .value { font-weight: 600; color: #334155; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .capital-link { color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 4px; }
         .btn-group { display: flex; gap: 8px; margin-top: 10px; }
         button { flex: 1; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; }
         button.secondary { background: #f1f5f9; color: #475569; font-size: 14px; }
         .progress-control { margin-top: 20px; padding-top: 15px; border-top: 1px dashed #e2e8f0; }
         .progress-text { font-size: 11px; color: #94a3b8; margin-bottom: 8px; }
-        .input-group { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 5px; }
-        input[type="number"] { width: 50px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 8px; text-align: center; }
-        .btn-sm { padding: 6px 10px; font-size: 11px; border-radius: 8px; background: #64748b; color: white; border: none; }
-        .voice-opt { font-size: 12px; color: #64748b; margin-bottom: 8px; display: flex; justify-content: center; align-items: center; gap: 5px; }
+        .input-group { display: flex; justify-content: center; align-items: center; gap: 5px; }
+        input[type="number"] { width: 45px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 8px; text-align: center; font-size: 12px; }
+        .btn-sm { padding: 8px 10px; font-size: 11px; border-radius: 8px; background: #64748b; color: white; border: none; cursor: pointer; font-weight: 600; transition: opacity 0.2s; }
+        .btn-sm:active { opacity: 0.7; }
+        /* 黑色按鈕樣式 */
+        .btn-black { background: var(--dark); }
+        /* 紅色按鈕樣式 */
+        .btn-red { background: var(--danger); }
+        .voice-opt { font-size: 12px; color: #64748b; margin-bottom: 12px; display: flex; justify-content: center; align-items: center; gap: 5px; }
     </style>
 </head>
 <body>
@@ -56,7 +60,7 @@
         </div>
 
         <div class="btn-group">
-            <a id="wikiLink" href="#" target="_blank" style="flex:1"><button class="secondary">百科</button></a>
+            <a id="wikiLink" href="#" target="_blank" style="flex:1"><button class="secondary">百科介紹</button></a>
             <button onclick="nextCountry()" style="flex:1.5">下一站</button>
         </div>
 
@@ -65,17 +69,19 @@
                 <input type="checkbox" id="autoVoice" checked> 
                 <label for="autoVoice">自動朗讀國名 (EN)</label>
             </div>
-            <div id="progressText" class="progress-text">進度：讀取中...</div>
+            <div id="progressText" class="progress-text">讀取進度中...</div>
             <div class="input-group">
                 <input type="number" id="targetIndex" placeholder="No.">
                 <button class="btn-sm" onclick="jumpTo()">跳轉</button>
-                <button class="btn-sm" style="background:#ef4444" onclick="resetProgress()">重置</button>
+                <button class="btn-sm btn-black" onclick="randomCountry()">🎲 隨機</button>
+                <button class="btn-sm btn-red" onclick="resetProgress()">重置</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+    // ... JavaScript 部分保持不變 ...
     let allCountries = [];
     let currentIndex = 0;
     let currentEnName = "";
@@ -108,7 +114,7 @@
     function updateDisplay() {
         if (allCountries.length === 0) return;
         const c = allCountries[currentIndex];
-        currentEnName = c.enName; // 儲存英文名稱供朗讀
+        currentEnName = c.enName;
 
         document.getElementById('flagImg').src = c.flag;
         document.getElementById('region').innerText = c.region;
@@ -118,10 +124,9 @@
         document.getElementById('wikiLink').href = c.wiki;
         document.getElementById('capitalLink').href = c.capitalMap;
         
-        document.getElementById('progressText').innerText = `第 ${currentIndex + 1} 個 / 共 ${allCountries.length} 個`;
+        document.getElementById('progressText').innerText = `目前位置：第 ${currentIndex + 1} 個 / 共 ${allCountries.length} 個`;
         localStorage.setItem('globite_idx', currentIndex);
 
-        // 如果勾選自動朗讀，延遲一下下後朗讀
         if (document.getElementById('autoVoice').checked) {
             setTimeout(speakCountry, 300);
         }
@@ -129,9 +134,10 @@
 
     function speakCountry() {
         if (!currentEnName) return;
+        window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(currentEnName);
         utterance.lang = 'en-US';
-        utterance.rate = 0.9; // 稍微放慢一點點
+        utterance.rate = 0.9;
         window.speechSynthesis.speak(utterance);
     }
 
@@ -140,16 +146,25 @@
         updateDisplay();
     }
 
+    function randomCountry() {
+        currentIndex = Math.floor(Math.random() * allCountries.length);
+        updateDisplay();
+    }
+
     function jumpTo() {
-        const val = parseInt(document.getElementById('targetIndex').value);
+        const input = document.getElementById('targetIndex');
+        const val = parseInt(input.value);
         if (val >= 1 && val <= allCountries.length) {
             currentIndex = val - 1;
             updateDisplay();
+            input.value = ""; 
+        } else {
+            alert(`請輸入 1 到 ${allCountries.length} 之間的編號`);
         }
     }
 
     function resetProgress() {
-        if (confirm("要重置進度嗎？")) {
+        if (confirm("要重置進度回到第 1 個國家嗎？")) {
             currentIndex = 0;
             updateDisplay();
         }
