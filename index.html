@@ -6,58 +6,56 @@
     <title>Globite - 每日一國</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <style>
-        :root { --primary: #2563eb; --bg: #f1f5f9; --dark: #1e293b; --danger: #ef4444; }
+        :root { --primary: #2563eb; --bg: #f1f5f9; --dark: #1e293b; --danger: #ef4444; --yt-soft: #f87171; }
         body { font-family: -apple-system, system-ui, sans-serif; background-color: var(--bg); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px 0; }
-        .card { background: white; width: 90%; max-width: 380px; border-radius: 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; text-align: center; }
+        .card { background: white; width: 90%; max-width: 380px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); overflow: hidden; text-align: center; }
         .image-container { width: 100%; height: 180px; background: #eee; cursor: pointer; position: relative; }
         .image-container img { width: 100%; height: 100%; object-fit: contain; }
-        .image-container::after { content: "🔊"; position: absolute; bottom: 10px; right: 10px; font-size: 20px; opacity: 0.6; }
-        .content { padding: 20px; }
-        .tag { display: inline-block; background: #f1f5f9; padding: 4px 12px; border-radius: 50px; font-size: 12px; color: #64748b; margin-bottom: 10px; }
+        .image-container::after { content: "🔊"; position: absolute; bottom: 10px; right: 10px; font-size: 20px; opacity: 0.5; }
+        .content { padding: 24px; }
+        .tag { display: inline-block; background: #f1f5f9; padding: 4px 12px; border-radius: 50px; font-size: 12px; color: #64748b; margin-bottom: 12px; }
         h1 { margin: 5px 0; font-size: 24px; color: #0f172a; line-height: 1.2; cursor: pointer; }
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; text-align: left; }
-        .info-item { background: #f8fafc; padding: 10px; border-radius: 12px; border: 1px solid #edf2f7; }
-        .label { color: #94a3b8; font-size: 10px; display: block; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; text-align: left; }
+        .info-item { background: #f8fafc; padding: 12px; border-radius: 16px; border: 1px solid #edf2f7; cursor: pointer; transition: background 0.2s; }
+        .info-item:active { background: #f1f5f9; }
+        .label { color: #94a3b8; font-size: 10px; display: block; margin-bottom: 4px; }
         .value { font-weight: 600; color: #334155; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .capital-link { color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 4px; }
         
-        /* 按鈕群組排版 */
-        .btn-group { display: flex; gap: 8px; margin-top: 10px; }
-        .btn-group a, .btn-group button { height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 16px; border: none; cursor: pointer; transition: opacity 0.2s; text-decoration: none; }
-        button:active, a:active { opacity: 0.7; }
+        /* 核心按鈕組佈局優化 */
+        .btn-group { display: flex; gap: 10px; margin-top: 10px; align-items: stretch; }
+        .btn-group a, .btn-group button { display: flex; align-items: center; justify-content: center; border-radius: 18px; border: none; cursor: pointer; transition: transform 0.1s, opacity 0.2s; text-decoration: none; }
+        .btn-group a:active, .btn-group button:active { transform: scale(0.96); opacity: 0.8; }
         
-        /* 修改下一站按鈕為黑色 */
-        .btn-main { flex: 2.5; background: var(--dark); color: white; font-size: 16px; font-weight: 600; }
-        .btn-icon { flex: 1; background: #f1f5f9; font-size: 20px; } 
+        .btn-icon { width: 50px; height: 55px; background: #f1f5f9; font-size: 20px; flex-shrink: 0; } 
+        .btn-main { flex-grow: 1; background: var(--dark); color: white; font-size: 17px; font-weight: 700; letter-spacing: 1px; }
         
-        .progress-control { margin-top: 20px; padding-top: 15px; border-top: 1px dashed #e2e8f0; }
-        .progress-text { font-size: 11px; color: #94a3b8; margin-bottom: 8px; }
-        .input-group { display: flex; justify-content: center; align-items: center; gap: 5px; }
-        input[type="number"] { width: 40px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 8px; text-align: center; font-size: 12px; }
-        .btn-sm { padding: 8px 10px; font-size: 11px; border-radius: 8px; background: #64748b; color: white; border: none; cursor: pointer; font-weight: 600; }
+        /* 下方進度控制區 */
+        .progress-control { margin-top: 25px; padding-top: 20px; border-top: 1px dashed #e2e8f0; }
+        .progress-text { font-size: 11px; color: #94a3b8; margin-bottom: 10px; }
+        .input-group { display: flex; justify-content: center; align-items: center; gap: 6px; }
+        input[type="number"] { width: 42px; padding: 8px; border: 1px solid #e2e8f0; border-radius: 10px; text-align: center; font-size: 12px; outline: none; }
+        .btn-sm { padding: 9px 12px; font-size: 11px; border-radius: 10px; background: #64748b; color: white; border: none; cursor: pointer; font-weight: 600; }
         .btn-black { background: var(--dark); }
-        .btn-red { background: var(--danger); }
-        .voice-opt { font-size: 12px; color: #64748b; margin-bottom: 12px; display: flex; justify-content: center; align-items: center; gap: 5px; }
+        .voice-opt { font-size: 12px; color: #64748b; margin-bottom: 12px; display: flex; justify-content: center; align-items: center; gap: 6px; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <div class="image-container" onclick="speakCountry()">
+    <div class="image-container" onclick="speakText(currentEnName)">
         <img id="flagImg" src="" alt="國旗">
     </div>
     <div class="content">
         <div id="region" class="tag">-</div>
-        <h1 id="countryName" onclick="speakCountry()">載入中...</h1>
+        <h1 id="countryName" onclick="speakText(currentEnName)">載入中...</h1>
         
         <div class="info-grid">
-            <div class="info-item">
-                <span class="label">官方首都 (跳轉地圖)</span>
-                <a id="capitalLink" href="#" target="_blank" class="capital-link">
-                    <span id="capital" class="value">-</span> 📍
-                </a>
+            <div class="info-item" onclick="speakText(currentCapitalEn)">
+                <span class="label">官方首都 🔊</span>
+                <span id="capital" class="value" style="color:var(--primary)">-</span>
+                <a id="capitalLink" href="#" target="_blank" style="font-size: 9px; text-decoration: none; color: #94a3b8; display: block; margin-top: 3px;">📍 地圖查看</a>
             </div>
-            <div class="info-item">
+            <div class="info-item" style="cursor: default;">
                 <span class="label">估計人口</span>
                 <span id="population" class="value">-</span>
             </div>
@@ -65,8 +63,8 @@
 
         <div class="btn-group">
             <a id="wikiLink" href="#" target="_blank" class="btn-icon" title="百科介紹">📖</a>
-            <a id="ytLink" href="#" target="_blank" class="btn-icon" title="影片介紹"><span style="color:#ff0000;">▶</span></a>
-            <button onclick="nextCountry()" class="btn-main">下一站</button>
+            <a id="ytLink" href="#" target="_blank" class="btn-icon" title="影片介紹"><span style="color:var(--yt-soft);">▶</span></a>
+            <button onclick="nextCountry()" class="btn-main">出發！下一站</button>
         </div>
 
         <div class="progress-control">
@@ -79,7 +77,7 @@
                 <input type="number" id="targetIndex" placeholder="No.">
                 <button class="btn-sm" onclick="jumpTo()">跳轉</button>
                 <button class="btn-sm btn-black" onclick="randomCountry()">🎲 隨機</button>
-                <button class="btn-sm btn-red" onclick="resetProgress()">重置</button>
+                <button class="btn-sm" onclick="resetProgress()" style="background:#cbd5e1; color:#475569;">重置</button>
             </div>
         </div>
     </div>
@@ -89,6 +87,7 @@
     let allCountries = [];
     let currentIndex = 0;
     let currentEnName = "";
+    let currentCapitalEn = "";
 
     const regionMap = { 'Asia': '亞洲', 'Europe': '歐洲', 'Africa': '非洲', 'Oceania': '大洋洲', 'Americas': '美洲', 'Antarctica': '南極洲' };
 
@@ -101,14 +100,15 @@
             allCountries = data.map(c => {
                 const zh = c.translations?.zho?.common || c.name.common;
                 const en = c.name.common;
+                const cap = c.capital ? c.capital[0] : 'None';
                 return {
                     zhName: zh, enName: en, flag: c.flags.png,
                     region: `${regionMap[c.continents[0]] || c.continents[0]} (${c.continents[0]})`,
-                    capital: c.capital ? c.capital[0] : '無',
+                    capital: cap,
                     population: c.population ? c.population.toLocaleString() : '不詳',
                     wiki: `https://zh.wikipedia.org/wiki/${zh}`,
                     ytSearch: `https://www.youtube.com/results?search_query=${encodeURIComponent(en + ' ' + zh)}`,
-                    capitalMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((c.capital ? c.capital[0] : '') + ' ' + en)}`
+                    capitalMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cap + ',' + en)}`
                 };
             });
 
@@ -122,6 +122,8 @@
         if (allCountries.length === 0) return;
         const c = allCountries[currentIndex];
         currentEnName = c.enName;
+        currentCapitalEn = c.capital;
+
         document.getElementById('flagImg').src = c.flag;
         document.getElementById('region').innerText = c.region;
         document.getElementById('countryName').innerHTML = `${c.zhName}<br><span style="font-size:14px; color:#94a3b8; font-weight:normal;">${c.enName}</span>`;
@@ -130,15 +132,19 @@
         document.getElementById('wikiLink').href = c.wiki;
         document.getElementById('ytLink').href = c.ytSearch;
         document.getElementById('capitalLink').href = c.capitalMap;
+        
         document.getElementById('progressText').innerText = `目前位置：第 ${currentIndex + 1} 個 / 共 ${allCountries.length} 個`;
         localStorage.setItem('globite_idx', currentIndex);
-        if (document.getElementById('autoVoice').checked) { setTimeout(speakCountry, 300); }
+
+        if (document.getElementById('autoVoice').checked) { 
+            setTimeout(() => speakText(currentEnName), 300); 
+        }
     }
 
-    function speakCountry() {
-        if (!currentEnName) return;
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(currentEnName);
+    function speakText(text) {
+        if (!text || text === 'None' || text === '無') return;
+        window.speechSynthesis.cancel(); 
+        const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'en-US';
         utterance.rate = 0.9;
         window.speechSynthesis.speak(utterance);
